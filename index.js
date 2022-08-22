@@ -8,48 +8,25 @@ const todoList = () => {
   };
 
   const overdue = () => {
-    let overdue = [];
-
-    all.forEach((item) => {
-      if (item.dueDate < today) {
-        overdue.push(item);
-      }
-    });
-    return overdue;
+    return all.filter((item) => item.dueDate < today);
   };
 
   const dueToday = () => {
-    let dueToday = [];
-
-    all.forEach((item) => {
-      if (item.dueDate === today) {
-        dueToday.push(item);
-      }
-    });
-    return dueToday;
+    return all.filter((item) => item.dueDate === today);
   };
 
   const dueLater = () => {
-    let dueLater = [];
-
-    all.forEach((item) => {
-      if (item.dueDate > today) {
-        dueLater.push(item);
-      }
-    });
-    return dueLater;
+    return all.filter((item) => item.dueDate > today);
   };
 
   const toDisplayableList = (list) => {
-    const result = `${list
+    return `${list
       .map(
         (item) =>
           (item.completed ? `[x] ${item.title}` : `[ ] ${item.title}`) +
           `${item.dueDate !== today ? ` ${item.dueDate}` : ""}`
       )
       .join("\n")}`;
-
-    return result;
   };
 
   return {
