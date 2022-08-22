@@ -1,39 +1,105 @@
-const fs = require("fs");
-const http = require("http");
-const readline = require("readline");
+const todoList = () => {
+  all = [];
+  const add = (todoItem) => {
+    all.push(todoItem);
+  };
+  const markAsComplete = (index) => {
+    all[index].completed = true;
+  };
 
-const readFile = (fileName) => {
-  try {
-    return fs.readFileSync(fileName);
-  } catch (e) {
-    throw e;
-  }
+  const overdue = () => {
+    let overdue = [];
+
+    all.forEach((item) => {
+      if (item.dueDate < today) {
+        overdue.push(item);
+      }
+    });
+    return overdue;
+  };
+
+  const dueToday = () => {
+    let dueToday = [];
+
+    all.forEach((item) => {
+      if (item.dueDate === today) {
+        dueToday.push(item);
+      }
+    });
+    return dueToday;
+  };
+
+  const dueLater = () => {
+    let dueLater = [];
+
+    all.forEach((item) => {
+      if (item.dueDate > today) {
+        dueLater.push(item);
+      }
+    });
+    return dueLater;
+  };
+
+  const toDisplayableList = (list) => {
+    const result = `${list
+      .map(
+        (item) =>
+          (item.completed ? `[x] ${item.title}` : `[ ] ${item.title}`) +
+          `${item.dueDate !== today ? ` ${item.dueDate}` : ""}`
+      )
+      .join("\n")}`;
+
+    return result;
+  };
+
+  return {
+    all,
+    add,
+    markAsComplete,
+    overdue,
+    dueToday,
+    dueLater,
+    toDisplayableList,
+  };
 };
 
-const server = (regPath) => http.createServer(function (request, response) {
-  let url = request.url;
-  response.writeHeader(200, { "Content-Type": "text/html" });
-  switch (url) {
-    case "/project":
-      response.write(readFile("projects.html"));
-      response.end();
-      break;
-    case "/registration":
-      response.write(readFile(regPath));
-      response.end();
-      break;
-    default:
-      response.write(readFile("home.html"));
-      response.end();
-      break;
-  }
-});
+// ####################################### #
+// DO NOT CHANGE ANYTHING BELOW THIS LINE. #
+// ####################################### #
 
-const lineDetail = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
+const todos = todoList();
 
-lineDetail.question(`Please provide registration file path - `, (path) => {
-  server(path).listen(3000);
-});
+const formattedDate = (d) => {
+  return d.toISOString().split("T")[0];
+};
+
+var d = new Date();
+const today = formattedDate(d);
+const yesterday = formattedDate(new Date(d.setDate(d.getDate() - 1)));
+const tomorrow = formattedDate(new Date(d.setDate(d.getDate() + 2)));
+
+todos.add({ title: "Submit assignment", dueDate: yesterday, completed: false });
+todos.add({ title: "Pay rent", dueDate: today, completed: true });
+todos.add({ title: "Service Vehicle", dueDate: today, completed: false });
+todos.add({ title: "File taxes", dueDate: tomorrow, completed: false });
+todos.add({ title: "Pay electric bill", dueDate: tomorrow, completed: false });
+
+console.log("My Todo-list\n\n");
+
+console.log("Overdue");
+var overdues = todos.overdue();
+var formattedOverdues = todos.toDisplayableList(overdues);
+console.log(formattedOverdues);
+console.log("\n\n");
+
+console.log("Due Today");
+let itemsDueToday = todos.dueToday();
+let formattedItemsDueToday = todos.toDisplayableList(itemsDueToday);
+console.log(formattedItemsDueToday);
+console.log("\n\n");
+
+console.log("Due Later");
+let itemsDueLater = todos.dueLater();
+let formattedItemsDueLater = todos.toDisplayableList(itemsDueLater);
+console.log(formattedItemsDueLater);
+console.log("\n\n");
