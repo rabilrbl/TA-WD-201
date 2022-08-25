@@ -8,15 +8,18 @@ const todoList = () => {
   };
 
   const overdue = () => {
-    return all.filter((item) => item.dueDate < today);
+    const d = new Date().toISOString().split("T")[0];
+    return all.filter((item) => item.dueDate < d);
   };
 
   const dueToday = () => {
-    return all.filter((item) => item.dueDate === today);
+    const d = new Date().toISOString().split("T")[0];
+    return all.filter((item) => item.dueDate === d);
   };
 
   const dueLater = () => {
-    return all.filter((item) => item.dueDate > today);
+    const d = new Date().toISOString().split("T")[0];
+    return all.filter((item) => item.dueDate > d);
   };
 
   const toDisplayableList = (list) => {
