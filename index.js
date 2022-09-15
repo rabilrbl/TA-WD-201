@@ -1,5 +1,5 @@
 function hello() {
-    console.log("Hello NGithub! Trying it for the first time");
+    console.log("Hello Node.js!");
   }
   
   hello();
