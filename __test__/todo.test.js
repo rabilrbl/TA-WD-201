@@ -39,6 +39,7 @@ describe("Todo List test suite", () => {
       completed: false,
       dueDate: yesterday,
     });
+    expect(all.length).toBe(2);
     const overdueItems = overdue();
     expect(overdueItems.length).toBe(1);
     expect(overdueItems[0].completed).toBe(false);
@@ -50,6 +51,7 @@ describe("Todo List test suite", () => {
       completed: false,
       dueDate: today,
     });
+    expect(all.length).toBe(3);
     const dueTodayItems = dueToday();
     expect(dueTodayItems.length).toBe(2);
     expect(dueTodayItems[1].completed).toBe(false);
@@ -61,6 +63,7 @@ describe("Todo List test suite", () => {
       completed: false,
       dueDate: tomorrow,
     });
+    expect(all.length).toBe(4);
     const dueLaterItems = dueLater();
     expect(dueLaterItems.length).toBe(1);
     expect(dueLaterItems[0].completed).toBe(false);
