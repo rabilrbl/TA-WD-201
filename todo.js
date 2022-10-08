@@ -1,5 +1,5 @@
 const todoList = () => {
-  all = [];
+  let all = [];
   const add = (todoItem) => {
     all.push(todoItem);
   };
@@ -23,11 +23,12 @@ const todoList = () => {
   };
 
   const toDisplayableList = (list) => {
+    const d = new Date().toISOString().split("T")[0];
     return `${list
       .map(
         (item) =>
           (item.completed ? `[x] ${item.title}` : `[ ] ${item.title}`) +
-          `${item.dueDate !== today ? ` ${item.dueDate}` : ""}`
+          `${item.dueDate !== d ? ` ${item.dueDate}` : ""}`
       )
       .join("\n")}`;
   };

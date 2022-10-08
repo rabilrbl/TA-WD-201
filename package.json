@@ -8,6 +8,12 @@
     "test": "jest",
     "prepare": "husky install"
   },
+  "lint-staged": {
+    "*.js": [
+      "eslint",
+      "prettier --write ."
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rabilrbl/TA-WD-201.git"
@@ -19,7 +25,10 @@
   },
   "homepage": "https://github.com/rabilrbl/TA-WD-201#readme",
   "devDependencies": {
+    "eslint": "^8.25.0",
     "husky": "^8.0.1",
-    "jest": "^29.1.2"
+    "jest": "^29.1.2",
+    "lint-staged": "^13.0.3",
+    "prettier": "^2.7.1"
   }
 }
