@@ -21,6 +21,10 @@ describe("Todo List test suite", () => {
       dueDate: today,
     });
     expect(all.length).toBe(todoCount + 1);
+    const addedTodo = all[all.length - 1];
+    expect(addedTodo.title).toBe("My new todo");
+    expect(addedTodo.completed).toBe(false);
+    expect(addedTodo.dueDate).toBe(today);
   });
 
   test("Make todo as complete", () => {
