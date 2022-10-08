@@ -21,16 +21,20 @@ describe("Todo List test suite", () => {
       dueDate: today,
     });
     expect(all.length).toBe(todoCount + 1);
-    const addedTodo = all[all.length - 1];
-    expect(addedTodo.title).toBe("My new todo");
-    expect(addedTodo.completed).toBe(false);
-    expect(addedTodo.dueDate).toBe(today);
   });
 
   test("Make todo as complete", () => {
     expect(all[0].completed).toBe(false);
     markAsComplete(0);
     expect(all[0].completed).toBe(true);
+  });
+
+  test("Check title of todo", () => {
+    expect(all[0].title).toBe("My new todo");
+  });
+
+  test("Check due date of todo", () => {
+    expect(all[0].dueDate).toBe(today);
   });
 
   test("checks retrieval of overdue items", () => {
@@ -42,7 +46,6 @@ describe("Todo List test suite", () => {
     expect(all.length).toBe(2);
     const overdueItems = overdue();
     expect(overdueItems.length).toBe(1);
-    expect(overdueItems[0].completed).toBe(false);
   });
 
   test("check retrieval of due today items", () => {
@@ -54,7 +57,6 @@ describe("Todo List test suite", () => {
     expect(all.length).toBe(3);
     const dueTodayItems = dueToday();
     expect(dueTodayItems.length).toBe(2);
-    expect(dueTodayItems[1].completed).toBe(false);
   });
 
   test("check retrieval of due later items", () => {
@@ -66,6 +68,5 @@ describe("Todo List test suite", () => {
     expect(all.length).toBe(4);
     const dueLaterItems = dueLater();
     expect(dueLaterItems.length).toBe(1);
-    expect(dueLaterItems[0].completed).toBe(false);
   });
 });
