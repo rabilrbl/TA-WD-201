@@ -1,6 +1,6 @@
 const fs = require("fs");
 const http = require("http");
-const readline = require("readline");
+const minimist = require("minimist");
 
 const readFile = (fileName) => {
   try {
@@ -10,7 +10,7 @@ const readFile = (fileName) => {
   }
 };
 
-const server = (regPath) => http.createServer(function (request, response) {
+const server = () => http.createServer(function (request, response) {
   let url = request.url;
   response.writeHeader(200, { "Content-Type": "text/html" });
   switch (url) {
@@ -19,7 +19,7 @@ const server = (regPath) => http.createServer(function (request, response) {
       response.end();
       break;
     case "/registration":
-      response.write(readFile(regPath));
+      response.write(readFile("registration.html"));
       response.end();
       break;
     default:
@@ -29,11 +29,12 @@ const server = (regPath) => http.createServer(function (request, response) {
   }
 });
 
-const lineDetail = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
+let args = minimist(process.argv.slice(2), {
+  default: {
+    port: 5000,
+  },
+ });
 
-lineDetail.question(`Please provide registration file path - `, (path) => {
-  server(path).listen(3000);
+server().listen(args.port, () => {
+  console.log(`Server started at ${args.port}`);
 });
