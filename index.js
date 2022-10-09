@@ -15,7 +15,7 @@ const server = (regPath) => http.createServer(function (request, response) {
   response.writeHeader(200, { "Content-Type": "text/html" });
   switch (url) {
     case "/project":
-      response.write(readFile("projects.html"));
+      response.write(readFile("project.html"));
       response.end();
       break;
     case "/registration":
