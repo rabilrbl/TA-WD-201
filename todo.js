@@ -22,6 +22,17 @@ const todoList = () => {
     return all.filter((item) => item.dueDate > d);
   };
 
+  const toDisplayableList = (list) => {
+    const d = new Date().toISOString().split("T")[0];
+    return `${list
+      .map(
+        (item) =>
+          (item.completed ? `[x] ${item.title}` : `[ ] ${item.title}`) +
+          `${item.dueDate !== d ? ` ${item.dueDate}` : ""}`
+      )
+      .join("\n")}`;
+  };
+
   return {
     all,
     add,
@@ -29,6 +40,7 @@ const todoList = () => {
     overdue,
     dueToday,
     dueLater,
+    toDisplayableList,
   };
 };
 
