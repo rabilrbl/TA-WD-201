@@ -1,13 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registration</title>
-</head>
-<body>
-    <p>This is a registration page.</p>
-    <a href="/">&lt;- Back to home</a>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Survey Form</title>
+    <link href="index.css" rel="stylesheet" />
+    <script defer src="reg.js"></script>
+  </head>
+  <body>
+    <h1 class="text-5xl text-center font-extrabold">Survey Form</h1>
+    <form id="user-form" class="flex flex-col space-y-4 mt-6">
+      <div class="form-div">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" required />
+      </div>
+      <div class="form-div">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required />
+      </div>
+      <div class="form-div">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          minlength="8"
+          required
+        />
+      </div>
+      <div class="form-div">
+        <label for="dob">Date of Birth</label>
+        <input
+          type="date"
+          id="dob"
+          name="dob"
+          required
+        />
+      </div>
+      <div class="flex space-x-2 items-center">
+        <input
+          class="w-5 h-5"
+          type="checkbox"
+          id="acceptTerms"
+          name="acceptTerms"
+        />
+        <label for="acceptTerms">Accept Terms & Conditions</label>
+      </div>
+      <button type="submit">Submit</button>
+    </form>
+    <div id="responses" class="mt-5">
+      <button class="responses-btn" onclick="viewResponses()">
+        View Responses
+      </button>
+    </div>
+  </body>
 </html>
