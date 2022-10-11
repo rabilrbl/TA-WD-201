@@ -7,9 +7,10 @@ class Todo extends Model {
   }
 
   displayableString() {
-    return `${this.id}. ${this.title} - ${this.dueDate}`;
+    return `${this.completed ? "[x]" : "[ ]"} ${this.id}. ${this.title} - ${
+      this.dueDate
+    }`;
   }
-
 }
 
 Todo.init(

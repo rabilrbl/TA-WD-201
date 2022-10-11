@@ -34,9 +34,43 @@ const getAllTodos = async () => {
   }
 };
 
+const getSingleTodo = async () => {
+  try {
+    const todo = await Todo.findOne({
+      where: {
+        completed: false,
+      },
+      order: [["id", "DESC"]],
+    });
+
+    console.log(todo.displayableString());
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const updateItem = async (id) => {
+  try {
+    const todo = await Todo.update(
+      { completed: true },
+      {
+        where: {
+          id: id,
+        },
+      }
+    );
+
+    console.log(todo.displayableString());
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 
 (async () => {
   // await createTodo();
   // await countItems();
+  await getAllTodos();
+  await updateItem(2);
   await getAllTodos();
 })();
