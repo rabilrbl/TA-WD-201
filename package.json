@@ -19,5 +19,17 @@
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.24.0",
     "sequelize-cli": "^6.5.1"
-  }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint",
+      "prettier --write ."
+    ]
+  },
+  "devDependencies": {
+    "eslint": "^8.25.0",
+    "lint-staged": "^13.0.3",
+    "prettier": "^2.7.1"
+  },
+  "repository": "git@github.com:rabilrbl/TA-WD-201"
 }
