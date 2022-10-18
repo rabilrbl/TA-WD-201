@@ -24,6 +24,10 @@ const getJSDate = (days) => {
       'title and dueInDays are required. \nSample command: node addTodo.js --title="Buy milk" --dueInDays=-2 '
     );
   }
-  await createTodo({ title, dueDate: getJSDate(dueInDays), completed: completed });
+  await createTodo({
+    title,
+    dueDate: getJSDate(dueInDays),
+    completed: completed,
+  });
   await db.Todo.showList();
 })();
