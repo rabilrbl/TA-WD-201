@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const request = require("supertest");
 
 const db = require("../models/index");
@@ -73,5 +74,15 @@ describe("Todo Application", function () {
 
   test("Deletes a todo with the given ID if it exists and sends a boolean response", async () => {
     // FILL IN YOUR CODE HERE
+    const response = await agent.post("/todos").send({
+      title: "Buy xbox",
+      dueDate: new Date().toISOString(),
+      completed: false,
+    });
+    const parsedResponse = JSON.parse(response.text);
+    const todoID = parsedResponse.id;
+    const deleteResponse = await agent.delete(`/todos/${todoID}`);
+    expect(deleteResponse.text).toBe("true");
+    expect(deleteResponse.statusCode).toBe(200);
   });
 });
