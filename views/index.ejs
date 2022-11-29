@@ -7,6 +7,20 @@
     <title>Index page</title>
   </head>
   <body>
-    <h1>This is index page!</h1>
+    <%- include('header.ejs') %>
+
+    <main>
+      <h2>My todos</h2>
+      <ul>
+        <% for (let i = 0; i < todos.length; i++) { %>
+          <li>
+            <a href="/todos/<%= todos[i].id %>">
+              <%= todos[i].title %>
+            </a>
+          </li>
+        <% } %>
+      </ul>
+
+    <% - include('footer.ejs') %>
   </body>
 </html>
