@@ -25,10 +25,19 @@
   </div>
   <div class="space-y-4">
     <!-- Overdue -->
-    <div><%- include('todoview', { todos: overdueTodos, todoTitle: 'Overdue' }) %></div>
+    <div>
+      <%- include('todoview', { todos: overdueTodos, todoTitle: 'Overdue',
+      countid: 'count-overdue' }) %>
+    </div>
     <!-- Due Today -->
-    <div><%- include('todoview', { todos: dueTodayTodos, todoTitle: 'Due Today' }) %></div>
+    <div>
+      <%- include('todoview', { todos: dueTodayTodos, todoTitle: 'Due Today',
+      countid: 'count-due-today' }) %>
+    </div>
     <!-- Due Later -->
-    <div><%- include('todoview', { todos: dueLaterTodos, todoTitle: 'Due Later' }) %></div>
+    <div>
+      <%- include('todoview', { todos: dueLaterTodos, todoTitle: 'Due Later',
+      countid: 'count-due-later' }) %>
+    </div>
   </div>
 </div>
