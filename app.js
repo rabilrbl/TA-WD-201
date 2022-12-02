@@ -11,14 +11,14 @@ app.use(express.urlencoded({ extended: true })); // to support URL-encoded bodie
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", async (request, response) => {
-  const todos = await Todo.getTodos();
-  if (request.accepts("html")) {
-    response.render("index", {
-      todos,
-    });
-  } else {
-    response.json(todos);
-  }
+  const overdueTodos = await Todo.overdue();
+  const dueTodayTodos = await Todo.dueToday();
+  const dueLaterTodos = await Todo.dueLater();
+  response.render("index", {
+    overdueTodos,
+    dueTodayTodos,
+    dueLaterTodos,
+  });
 });
 
 app.post("/todos", async (request, response) => {
@@ -45,10 +45,23 @@ app.post("/todos", async (request, response) => {
 //   }
 // });
 
-app.post("/todos/:id/complete", async function (request, response) {
+app.get("/todos/:id/complete", async function (request, response) {
   const todo = await Todo.findByPk(request.params.id);
   try {
     const updatedTodo = await todo.markAsCompleted();
+    request.accepts("html")
+      ? response.redirect("/")
+      : response.json(updatedTodo);
+  } catch (error) {
+    console.log(error);
+    return response.status(422).json(error);
+  }
+});
+
+app.get("/todos/:id/uncomplete", async function (request, response) {
+  const todo = await Todo.findByPk(request.params.id);
+  try {
+    const updatedTodo = await todo.markAsUncompleted();
     request.accepts("html")
       ? response.redirect("/")
       : response.json(updatedTodo);

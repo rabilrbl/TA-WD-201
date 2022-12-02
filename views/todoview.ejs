@@ -1,0 +1,56 @@
+<h5 class="text-xl font-bold"><%= todoTitle %> <span class="bg-gray-600 rounded-full px-3 text-base"><%= todos.length %></span></h5>
+<% todos.forEach(function(todo) { %>
+<div class="flex justify-between items-center p-2 rounded-lg gap-2">
+  <!-- Checkbox -->
+  <% if (todo.completed) { %>
+  <div
+    onclick="document.location.href='/todos/<%= todo.id %>/uncomplete'"
+    class="flex items-center"
+  >
+    <input
+      class="h-5 w-5 rounded-full text-green-500 cursor-pointer"
+      type="checkbox"
+      checked
+    />
+  </div>
+  <% } else { %>
+  <div
+    onclick="document.location.href='/todos/<%= todo.id %>/complete'"
+    class="flex items-center"
+  >
+    <input
+      class="h-5 w-5 rounded-full text-green-500 cursor-pointer"
+      type="checkbox"
+      unchecked
+    />
+  </div>
+  <% } %>
+  <!-- Title -->
+  <div class="flex-auto">
+    <div class="flex items-center gap-2">
+      <h3 class="text-lg"><%= todo.title %></h3>
+      <span class="text-sm text-gray-500"><%= todo.dueDate %></span>
+      <!-- Delete button -->
+      <form action="/todos/<%= todo.id %>/delete" method="POST">
+        <button class="text-red-500 text-sm">
+          <!-- Trash -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+<% }) %>
