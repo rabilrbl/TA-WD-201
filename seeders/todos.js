@@ -2,11 +2,10 @@ const { Todo } = require("../models");
 
 module.exports = {
   seedTodo: async () => {
-    const todo = await Todo.create({
-      title: "Learn Sequelize",
+    await Todo.create({
+      title: "Learn Express",
       dueDate: "2020-10-10",
-      completed: false,
+      completed: true,
     });
-    console.log("Todo seeded: ", todo.title);
   },
 };

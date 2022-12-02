@@ -3,24 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="/css/styles.css" />
     <title>Index page</title>
   </head>
-  <body>
+  <body class="text-center">
     <%- include('header.ejs') %>
 
     <main>
-      <h2>My todos</h2>
-      <ul>
-        <% for (let i = 0; i < todos.length; i++) { %>
-          <li>
-            <a href="/todos/<%= todos[i].id %>">
-              <%= todos[i].title %>
-            </a>
-          </li>
-        <% } %>
-      </ul>
+      <%- include('todos.ejs') %>
+    </main>
 
-    <% - include('footer.ejs') %>
+    <%- include('footer.ejs') %>
   </body>
 </html>
