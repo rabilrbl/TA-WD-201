@@ -39,12 +39,17 @@ app.get("/", async (request, response) => {
 
 app.post("/todos", async (request, response) => {
   console.log(request.body);
-  const todo = await Todo.addTodo({
-    title: request.body.title.trim(),
-    dueDate: request.body.dueDate,
-    completed: false,
-  });
-  request.accepts("html") ? response.redirect("/") : response.json(todo);
+  try {
+    const todo = await Todo.addTodo({
+      title: request.body.title.trim(),
+      dueDate: request.body.dueDate,
+      completed: false,
+    });
+    request.accepts("html") ? response.redirect("/") : response.json(todo);
+  } catch (error) {
+    console.log(error);
+    response.status(500).json({ error: error.message });
+  }
 });
 
 app.get("/todos/:id", async function (request, response) {
