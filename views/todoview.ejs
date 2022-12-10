@@ -1,6 +1,6 @@
 <div class="flex items-center gap-2">
   <h5 class="text-xl font-bold"><%= todoTitle %></h5>
-  <span id="<%= countid %>" class="bg-gray-600 rounded-full px-3 text-base"
+  <span class="bg-gray-600 rounded-full px-3 text-base"
     ><%= todos.length %></span
   >
 </div>
@@ -10,9 +10,9 @@
   id="div-todo-<%= todo.id %>"
 >
   <!-- Checkbox -->
-  <input class="h-5 w-5 rounded-full cursor-pointer"
-  type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? "checked" : ''
-  %> onclick="updateTodo(<%= todo.id %>)" />
+  <input class="h-5 w-5 rounded-full cursor-pointer" type="checkbox"
+  id="todo-<%= todo.id %>" <%= todo.completed ? "checked" : '' %>
+  onclick="updateTodo(<%= todo.id %>)" />
   <!-- Title -->
   <div class="flex-auto">
     <div class="flex items-center gap-2">

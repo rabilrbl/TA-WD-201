@@ -29,26 +29,25 @@
     <% if (overdueTodos.length > 0) { %>
     <!-- Overdue -->
     <div>
-      <%- include('todoview', { todos: overdueTodos, todoTitle: 'Overdue',
-      countid: 'count-overdue' }) %>
+      <%- include('todoview', { todos: overdueTodos, todoTitle: 'Overdue' }) %>
     </div>
     <% } %> <% if (dueTodayTodos.length > 0) {%>
     <!-- Due Today -->
     <div>
-      <%- include('todoview', { todos: dueTodayTodos, todoTitle: 'Due Today',
-      countid: 'count-due-today' }) %>
+      <%- include('todoview', { todos: dueTodayTodos, todoTitle: 'Due Today' })
+      %>
     </div>
     <% } %> <% if (dueLaterTodos.length > 0) {%>
     <!-- Due Later -->
     <div>
-      <%- include('todoview', { todos: dueLaterTodos, todoTitle: 'Due Later',
-      countid: 'count-due-later' }) %>
+      <%- include('todoview', { todos: dueLaterTodos, todoTitle: 'Due Later' })
+      %>
     </div>
     <% } %> <% if (completedTodos.length > 0) {%>
     <!-- Completed -->
     <div>
-      <%- include('todoview', { todos: completedTodos, todoTitle: 'Completed',
-      countid: 'count-completed' }) %>
+      <%- include('todoview', { todos: completedTodos, todoTitle: 'Completed' })
+      %>
     </div>
     <% } %>
   </div>

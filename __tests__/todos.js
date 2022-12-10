@@ -89,6 +89,14 @@ describe("Todo Application", function () {
     expect(res.statusCode).toEqual(200);
   });
 
+  it("should mark a todo as uncomplete", async () => {
+    const res = await agent.put("/todos/1").send({
+      completed: false,
+      _csrf,
+    });
+    expect(res.statusCode).toEqual(200);
+  });
+
   it("should delete a todo", async () => {
     const res = await agent.delete("/todos/1").send({
       _csrf,
