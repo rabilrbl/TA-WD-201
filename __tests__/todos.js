@@ -87,6 +87,7 @@ describe("Todo Application", function () {
       _csrf,
     });
     expect(res.statusCode).toEqual(200);
+    expect(JSON.parse(res.text).completed).toEqual(true);
   });
 
   it("should mark a todo as uncomplete", async () => {
@@ -95,6 +96,7 @@ describe("Todo Application", function () {
       _csrf,
     });
     expect(res.statusCode).toEqual(200);
+    expect(JSON.parse(res.text).completed).toEqual(false);
   });
 
   it("should delete a todo", async () => {
