@@ -21,63 +21,84 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    static async addTodo({ title, dueDate, completed }) {
+    static async addTodo({ title, dueDate, completed, userId }) {
       return await this.create({
         title: title,
         dueDate: dueDate,
         completed: completed,
+        userId: userId,
       });
     }
 
-    static async overdue() {
+    static async overdue(userId) {
       return await this.findAll({
         where: {
           dueDate: {
             [Op.lt]: new Date(),
           },
           completed: false,
+          userId,
         },
         order: [["dueDate", "ASC"]],
       });
     }
 
-    static async dueToday() {
+    static async dueToday(userId) {
       return await this.findAll({
         where: {
           dueDate: {
             [Op.eq]: new Date(),
           },
           completed: false,
+          userId,
         },
         order: [["dueDate", "ASC"]],
       });
     }
 
-    static async dueLater() {
+    static async dueLater(userId) {
       return await this.findAll({
         where: {
           dueDate: {
             [Op.gt]: new Date(),
           },
           completed: false,
+          userId,
         },
         order: [["dueDate", "ASC"]],
       });
     }
 
-    static async completedTodos() {
+    static async remove(id, userId) {
+      return await this.destroy({
+        where: {
+          id,
+          userId,
+        },
+      });
+    }
+
+    static async completedTodos(userId) {
       return await this.findAll({
         where: {
           completed: true,
+          userId,
         },
         order: [["dueDate", "ASC"]],
       });
     }
 
-    setCompletionStatus(completeStatus) {
-      return this.update({
-        completed: completeStatus,
-      });
+    setCompletionStatus(completeStatus, userId) {
+      return this.update(
+        {
+          completed: completeStatus,
+        },
+        {
+          where: {
+            userId,
+          },
+        }
+      );
     }
   }
   Todo.init(
