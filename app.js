@@ -173,7 +173,7 @@ app.delete(
 
 app.get(
   "/signup",
-  connectEnsureLogin.ensureLoggedOut(),
+  connectEnsureLogin.ensureLoggedOut({ redirectTo: "/todos" }),
   (request, response) => {
     response.render("signup", { csrfToken: request.csrfToken() });
   }
@@ -181,7 +181,7 @@ app.get(
 
 app.post(
   "/users",
-  connectEnsureLogin.ensureLoggedOut(),
+  connectEnsureLogin.ensureLoggedOut({ redirectTo: "/todos" }),
   async function (request, response) {
     const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
     const user = await Users.create({
@@ -203,9 +203,13 @@ app.post(
   }
 );
 
-app.get("/login", connectEnsureLogin.ensureLoggedOut(), (request, response) => {
-  response.render("login", { csrfToken: request.csrfToken() }); // it refers to login.ejs in views folder
-});
+app.get(
+  "/login",
+  connectEnsureLogin.ensureLoggedOut({ redirectTo: "/todos" }),
+  (request, response) => {
+    response.render("login", { csrfToken: request.csrfToken() }); // it refers to login.ejs in views folder
+  }
+);
 
 app.post(
   "/session",
