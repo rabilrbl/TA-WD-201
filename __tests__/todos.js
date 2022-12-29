@@ -121,4 +121,13 @@ describe("Todo Application", function () {
     });
     expect(res.statusCode).toEqual(200);
   });
+
+  it("test for sessions", async () => {
+    let res = await agent.get("/todos");
+    expect(res.statusCode).toBe(200);
+    res = await agent.get("/signout");
+    expect(res.statusCode).toBe(302);
+    res = await agent.get("/todos");
+    expect(res.statusCode).toBe(302);
+  });
 });
