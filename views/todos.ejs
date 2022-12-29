@@ -2,6 +2,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="csrf-token" content="<%= csrfToken %>" />
   <% if (process.env.NODE_ENV === 'development') { %>
   <script src="/reload/reload.js"></script>
   <% } %>
@@ -17,10 +18,10 @@
           <button
             type="submit"
             class="bg-red-500 text-white p-2 px-4 rounded-lg flex items-center justify-center gap-2"
-          >
+            >
           Logout
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
+          <svg
+          xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
               stroke-width="1.5"
@@ -36,6 +37,20 @@
           </button>
         </a>
       </div>
+      <% if(messages && messages.success && messages.success.length > 0)  { %>
+        <ul class="bg-green-700 text-gray-100 p-2 rounded-xl m-2">
+        <% for(var i=0; i<messages.success.length; i++) { %>
+                <li> <%= messages.success[i] %></li>
+        <% } %>
+      </ul>
+      <% } %>
+      <% if(messages && messages.error && messages.error.length > 0)  { %>
+        <ul class="bg-red-700 text-gray-100 p-2 rounded-xl m-2">
+        <% for(var i=0; i<messages.error.length; i++) { %>
+                <li> <%= messages.error[i] %></li>
+        <% } %>
+      </ul>
+      <% } %>
       <div class="pt-2">
         <form
           class="flex flex-col md:flex-row gap-2"
@@ -50,16 +65,16 @@
             class="border-2 border-gray-300 bg-transparent p-2 rounded-lg flex-auto"
             placeholder="Add a new todo"
             required
-          />
+            />
           <input
-            type="date"
-            name="dueDate"
-            class="border-2 border-gray-300 bg-transparent p-2 rounded-lg flex-auto"
-            required
+          type="date"
+          name="dueDate"
+          class="border-2 border-gray-300 bg-transparent p-2 rounded-lg flex-auto"
+          required
           />
           <button
-            type="submit"
-            class="bg-green-500 text-white p-2 px-4 rounded-lg flex-none"
+          type="submit"
+          class="bg-green-500 text-white p-2 px-4 rounded-lg flex-none"
           >
             Add
           </button>
@@ -92,45 +107,46 @@
         </div>
         <% } %>
       </div>
+  <script>
+    const _csrf = document.querySelector('meta[name="csrf-token"]').content;
+    const updateTodo = async (id) => {
+      const todo = document.getElementById(`todo-${id}`);
+      const completed = todo.checked;
+      await fetch(`/todos/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ completed, _csrf: _csrf }),
+      })
+        .then((res) => {
+          if (res.ok) {
+            window.location.reload();
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+    const deleteTodo = async (id) => {
+      await fetch(`/todos/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ _csrf: _csrf }),
+      })
+        .then((res) => {
+          if (res.ok) {
+            window.location.reload();
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+  </script>
     </div>
   </div>
 </div>
-<script>
-  const _csrf = document.querySelector('meta[name="csrf-token"]').content;
-  const updateTodo = async (id) => {
-    const todo = document.getElementById(`todo-${id}`);
-    const completed = todo.checked;
-    await fetch(`/todos/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ completed, _csrf: _csrf }),
-    })
-      .then((res) => {
-        if (res.ok) {
-          window.location.reload();
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-  const deleteTodo = async (id) => {
-    await fetch(`/todos/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ _csrf: _csrf }),
-    })
-      .then((res) => {
-        if (res.ok) {
-          window.location.reload();
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-</script>
+

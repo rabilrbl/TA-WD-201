@@ -13,6 +13,8 @@ const bcrypt = require("bcrypt");
 
 const saltRounds = 10;
 
+const flash = require("connect-flash");
+
 app.use(cookieParser("secret"));
 
 app.use(cors());
@@ -21,6 +23,8 @@ app.use(express.json()); // to support JSON-encoded bodies
 app.use(express.urlencoded({ extended: true })); // to support URL-encoded bodies
 // eslint-disable-next-line no-undef
 app.use(express.static(path.join(__dirname, "public")));
+// eslint-disable-next-line no-undef
+app.set("views", path.join(__dirname, "views"));
 app.use(csurf({ cookie: true }));
 
 app.use(
@@ -49,7 +53,7 @@ passport.use(
           if (result) {
             return done(null, user);
           } else {
-            return done("Invalid password");
+            return done(null, false, { message: "Invalid password" });
           }
         })
         .catch((err) => {
@@ -58,6 +62,13 @@ passport.use(
     }
   )
 );
+
+app.use(flash());
+
+app.use(function (request, response, next) {
+  response.locals.messages = request.flash();
+  next();
+});
 
 passport.serializeUser(function (user, done) {
   console.log("Serializing user in session: ", user.id);
@@ -112,17 +123,29 @@ app.post(
   "/todos",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
-    console.log(request.body);
+    const title = request.body.title.trim();
+    const dueDate = request.body.dueDate;
+    const completed = false;
+    const userId = request.user.id;
     try {
       const todo = await Todo.addTodo({
-        title: request.body.title.trim(),
-        dueDate: request.body.dueDate,
-        completed: false,
-        userId: request.user.id,
-      });
-      request.accepts("html")
-        ? response.redirect("/todos")
-        : response.json(todo);
+        title,
+        dueDate,
+        completed,
+        userId,
+      })
+        .then(() => {
+          request.accepts("html")
+            ? request.flash("success", "Todo added successfully") &&
+              response.redirect("/todos")
+            : response.json(todo);
+        })
+        .catch((error) => {
+          request.accepts("html")
+            ? request.flash("error", error.message) &&
+              response.redirect("/todos")
+            : response.status(400).json({ error: error.message });
+        });
     } catch (error) {
       console.log(error);
       response.status(500).json({ error: error.message });
@@ -190,28 +213,38 @@ app.post(
   "/users",
   connectEnsureLogin.ensureLoggedOut({ redirectTo: "/todos" }),
   async function (request, response) {
-    const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
-    const user = await Users.create({
-      firstName: request.body.firstName,
-      lastName: request.body.lastName,
-      email: request.body.email,
-      password: hashedPwd,
-    }).catch((error) => {
-      console.log(error);
-    });
-    // Initialize session after successful signup
-    request.login(user, function (err) {
-      if (err) {
-        console.log(err);
-        return response.status(500).json({ error: err.message });
-      }
-      return request.accepts("html")
-        ? response.redirect("/todos")
-        : response.json({
-            id: user.id,
-            message: "User created successfully",
-          });
-    });
+    const firstName = request.body.firstName.trim();
+    const lastName = request.body.lastName.trim();
+    const email = request.body.email.trim();
+    const password = await bcrypt.hash(request.body.password, saltRounds);
+    await Users.create({
+      firstName,
+      lastName,
+      email,
+      password,
+    })
+      .then((user) => {
+        // Initialize session after successful signup
+        request.login(user, function (err) {
+          if (err) {
+            return response.status(500).json({ error: err.message });
+          }
+          return request.accepts("html")
+            ? response.redirect("/todos") &&
+                request.flash("success", "User created successfully")
+            : response.json({
+                id: user.id,
+                message: "User created successfully",
+              });
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+        return request.accepts("html")
+          ? request.flash("error", error.message) &&
+              response.redirect("/signup")
+          : response.status(422).json({ error: error.message });
+      });
   }
 );
 
@@ -225,7 +258,10 @@ app.get(
 
 app.post(
   "/session",
-  passport.authenticate("local", { failureRedirect: "/login" }),
+  passport.authenticate("local", {
+    failureRedirect: "/login",
+    failureFlash: true,
+  }),
   function (request, response) {
     console.log(request.user);
     response.redirect("/todos");
@@ -240,7 +276,8 @@ app.get(
       if (err) {
         return next(err);
       }
-      response.redirect("/");
+      request.flash("success", "You have been logged out");
+      response.redirect("/login");
     });
   }
 );

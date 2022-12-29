@@ -122,6 +122,48 @@ describe("Todo Application", function () {
     expect(res.statusCode).toEqual(200);
   });
 
+  it("should not create a todo with empty title", async () => {
+    const res = await agent
+      .post("/todos")
+      .send({
+        title: "",
+        dueDate: new Date(),
+        completed: false,
+        userId,
+        _csrf,
+      })
+      .set("Accept", "application/json");
+    expect(res.statusCode).toEqual(400);
+  });
+
+  it("should not create a todo with empty dueDate", async () => {
+    const res = await agent
+      .post("/todos")
+      .send({
+        title: "Test Todo",
+        dueDate: "",
+        completed: false,
+        userId,
+        _csrf,
+      })
+      .set("Accept", "application/json");
+    expect(res.statusCode).toEqual(400);
+  });
+
+  it("should not create a todo with empty userId", async () => {
+    const res = await agent
+      .post("/todos")
+      .send({
+        title: "Test Todo",
+        dueDate: new Date(),
+        completed: false,
+        userId: "",
+        _csrf,
+      })
+      .set("Accept", "application/json");
+    expect(res.statusCode).toEqual(400);
+  });
+
   it("test for sessions", async () => {
     let res = await agent.get("/todos");
     expect(res.statusCode).toBe(200);
@@ -129,5 +171,33 @@ describe("Todo Application", function () {
     expect(res.statusCode).toBe(302);
     res = await agent.get("/todos");
     expect(res.statusCode).toBe(302);
+  });
+
+  it("should not create user with empty firstName", async () => {
+    const res = await agent
+      .post("/users")
+      .send({
+        firstName: "",
+        lastName: "User",
+        email: "example@ex.in",
+        password: "dsfsf",
+        _csrf,
+      })
+      .set("Accept", "application/json");
+    expect(res.statusCode).toEqual(422);
+  });
+
+  it("should not create user with empty email", async () => {
+    const res = await agent
+      .post("/users")
+      .send({
+        firstName: "Test",
+        lastName: "User",
+        email: "",
+        password: "dsfsf",
+        _csrf,
+      })
+      .set("Accept", "application/json");
+    expect(res.statusCode).toEqual(422);
   });
 });
