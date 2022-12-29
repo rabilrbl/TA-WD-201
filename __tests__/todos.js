@@ -8,9 +8,18 @@ const { Todo } = require("../models/");
 let server, agent, _csrf;
 
 const fetchCSRFToken = async () => {
-  const response = await agent.get("/").set("Accept", "text/html");
-  // Scrap csrf token from meta tag
+  // Get csrf token from home page
+  let response = await agent.get("/signup").set("Accept", "text/html");
   const csrfToken = response.text.match(/name="_csrf" value="(.*)"/)[1];
+  response = await agent.post("/users").send({
+    firstName: "Test",
+    lastName: "User",
+    email: "test@user.in",
+    password: "Test@1234535345",
+    _csrf: csrfToken,
+  });
+  expect(response.statusCode).toEqual(302);
+  // Scrap csrf token from meta tag
   return csrfToken;
 };
 
@@ -18,7 +27,7 @@ describe("Todo Application", function () {
   beforeAll(async () => {
     await db.sequelize.sync({ force: true });
     server = app.listen(3000, () => {});
-    agent = request.agent(server);
+    agent = request.agent(server, { keepAlive: true });
 
     const today = new Date();
     const oneDay = 60 * 60 * 24 * 1000;
@@ -67,7 +76,7 @@ describe("Todo Application", function () {
   });
 
   it("should get all todos", async () => {
-    const res = await agent.get("/").set("Accept", "application/json");
+    const res = await agent.get("/todos").set("Accept", "application/json");
     expect(res.statusCode).toEqual(200);
     // get json response from res
     const jsonRes = JSON.parse(res.text);

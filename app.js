@@ -91,13 +91,20 @@ app.get(
     const dueTodayTodos = await Todo.dueToday(loggedInUserId);
     const dueLaterTodos = await Todo.dueLater(loggedInUserId);
     const completedTodos = await Todo.completedTodos(loggedInUserId);
-    response.render("todos", {
-      overdueTodos,
-      dueTodayTodos,
-      dueLaterTodos,
-      completedTodos,
-      csrfToken: request.csrfToken(),
-    });
+    request.accepts("html")
+      ? response.render("todos", {
+          overdueTodos,
+          dueTodayTodos,
+          dueLaterTodos,
+          completedTodos,
+          csrfToken: request.csrfToken(),
+        })
+      : response.json({
+          overdueTodos,
+          dueTodayTodos,
+          dueLaterTodos,
+          completedTodos,
+        });
   }
 );
 
@@ -196,10 +203,10 @@ app.post(
     request.login(user, function (err) {
       if (err) {
         console.log(err);
+        return response.status(500).json({ error:  err.message });
       }
       return response.redirect("/todos");
     });
-    // response.redirect("/todos"); // Redirected to root path
   }
 );
 
