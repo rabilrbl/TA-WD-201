@@ -203,9 +203,14 @@ app.post(
     request.login(user, function (err) {
       if (err) {
         console.log(err);
-        return response.status(500).json({ error:  err.message });
+        return response.status(500).json({ error: err.message });
       }
-      return response.redirect("/todos");
+      return request.accepts("html")
+        ? response.redirect("/todos")
+        : response.json({
+            id: user.id,
+            message: "User created successfully",
+          });
     });
   }
 );

@@ -11,16 +11,21 @@ const fetchCSRFToken = async () => {
   // Get csrf token from home page
   let response = await agent.get("/signup").set("Accept", "text/html");
   const csrfToken = response.text.match(/name="_csrf" value="(.*)"/)[1];
-  response = await agent.post("/users").send({
-    firstName: "Test",
-    lastName: "User",
-    email: "test@user.in",
-    password: "Test@1234535345",
-    _csrf: csrfToken,
-  });
-  expect(response.statusCode).toEqual(302);
-  // Scrap csrf token from meta tag
-  return csrfToken;
+  response = await agent
+    .post("/users")
+    .send({
+      firstName: "Test",
+      lastName: "User",
+      email: "test@user.in",
+      password: "Test@1234535345",
+      _csrf: csrfToken,
+    })
+    .set("Accept", "application/json");
+  expect(response.statusCode).toEqual(200);
+  return {
+    csrfToken,
+    userId: JSON.parse(response.text).id,
+  };
 };
 
 describe("Todo Application", function () {
@@ -28,6 +33,10 @@ describe("Todo Application", function () {
     await db.sequelize.sync({ force: true });
     server = app.listen(3000, () => {});
     agent = request.agent(server, { keepAlive: true });
+
+    const init = await fetchCSRFToken();
+    _csrf = init.csrfToken;
+    userId = init.userId;
 
     const today = new Date();
     const oneDay = 60 * 60 * 24 * 1000;
@@ -38,11 +47,13 @@ describe("Todo Application", function () {
         dueDate: new Date(today.getTime() - 2 * oneDay).toLocaleDateString(
           "en-CA"
         ),
+        userId,
       },
       {
         title: "Second Todo",
         completed: false,
         dueDate: new Date().toLocaleDateString("en-CA"),
+        userId,
       },
       {
         title: "Third Todo",
@@ -50,11 +61,11 @@ describe("Todo Application", function () {
         dueDate: new Date(today.getTime() + 2 * oneDay).toLocaleDateString(
           "en-CA"
         ),
+        userId,
       },
     ].forEach(async (todo) => {
       await Todo.addTodo(todo);
     });
-    _csrf = await fetchCSRFToken();
   });
 
   afterAll(async () => {
@@ -80,14 +91,10 @@ describe("Todo Application", function () {
     expect(res.statusCode).toEqual(200);
     // get json response from res
     const jsonRes = JSON.parse(res.text);
-    const overdueTodos = jsonRes.overdueTodos;
-    const dueTodayTodos = jsonRes.dueTodayTodos;
-    const dueLaterTodos = jsonRes.dueLaterTodos;
-    const completedTodos = jsonRes.completedTodos;
-    expect(overdueTodos.length).toEqual(1);
-    expect(dueTodayTodos.length).toEqual(2);
-    expect(dueLaterTodos.length).toEqual(1);
-    expect(completedTodos.length).toEqual(0);
+    expect(jsonRes.overdueTodos.length).toEqual(1);
+    expect(jsonRes.dueTodayTodos.length).toEqual(2);
+    expect(jsonRes.dueLaterTodos.length).toEqual(1);
+    expect(jsonRes.completedTodos.length).toEqual(0);
   });
 
   it("should mark a todo as completed", async () => {
