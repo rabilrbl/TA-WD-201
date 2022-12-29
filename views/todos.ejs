@@ -1,8 +1,6 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- CSRF -->
-  <meta name="csrf-token" content="<%= csrfToken %>">
   <script src="https://cdn.tailwindcss.com"></script>
   <% if (process.env.NODE_ENV === 'development') { %>
   <script src="/reload/reload.js"></script>
@@ -10,59 +8,91 @@
   <link rel="stylesheet" href="/css/styles.css" />
   <title>ToDo</title>
 </head>
-<div class="w-full space-y-4">
-  <h1 class="text-4xl font-extrabold">My Todo-list</h1>
-  <a href="/signout" method="delete">Signout</a>
-  <div class="pt-2">
-    <form class="flex flex-col md:flex-row gap-2" action="/todos" method="POST">
-      <!-- CSRF -->
-      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-      <input
-        type="text"
-        name="title"
-        class="border-2 border-gray-300 bg-transparent p-2 rounded-lg flex-auto"
-        placeholder="Add a new todo"
-        required
-      />
-      <input
-        type="date"
-        name="dueDate"
-        class="border-2 border-gray-300 bg-transparent p-2 rounded-lg flex-auto"
-        required
-      />
-      <button
-        type="submit"
-        class="bg-green-500 text-white p-2 px-4 rounded-lg flex-none"
-      >
-        Add
-      </button>
-    </form>
-  </div>
-  <div class="space-y-4">
-    <% if (overdueTodos.length > 0) { %>
-    <!-- Overdue -->
-    <div>
-      <%- include('todoview', { todos: overdueTodos, todoTitle: 'Overdue' }) %>
+<div class="grid grid-cols-6">
+  <div class="col-start-3 col-span-2 py-10">
+    <div class="w-full space-y-4">
+      <div class="flex justify-between items-center">
+        <h1 class="text-4xl font-extrabold">My Todo-list</h1>
+        <a href="/signout" method="delete">
+          <button
+            type="submit"
+            class="bg-red-500 text-white p-2 px-4 rounded-lg flex items-center justify-center gap-2"
+          >
+          Logout
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-6 h-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"
+              />
+            </svg>
+          </button>
+        </a>
+      </div>
+      <div class="pt-2">
+        <form
+          class="flex flex-col md:flex-row gap-2"
+          action="/todos"
+          method="POST"
+        >
+          <!-- CSRF -->
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+          <input
+            type="text"
+            name="title"
+            class="border-2 border-gray-300 bg-transparent p-2 rounded-lg flex-auto"
+            placeholder="Add a new todo"
+            required
+          />
+          <input
+            type="date"
+            name="dueDate"
+            class="border-2 border-gray-300 bg-transparent p-2 rounded-lg flex-auto"
+            required
+          />
+          <button
+            type="submit"
+            class="bg-green-500 text-white p-2 px-4 rounded-lg flex-none"
+          >
+            Add
+          </button>
+        </form>
+      </div>
+      <div class="space-y-4">
+        <% if (overdueTodos.length > 0) { %>
+        <!-- Overdue -->
+        <div>
+          <%- include('todoview', { todos: overdueTodos, todoTitle: 'Overdue' })
+          %>
+        </div>
+        <% } %> <% if (dueTodayTodos.length > 0) {%>
+        <!-- Due Today -->
+        <div>
+          <%- include('todoview', { todos: dueTodayTodos, todoTitle: 'Due Today'
+          }) %>
+        </div>
+        <% } %> <% if (dueLaterTodos.length > 0) {%>
+        <!-- Due Later -->
+        <div>
+          <%- include('todoview', { todos: dueLaterTodos, todoTitle: 'Due Later'
+          }) %>
+        </div>
+        <% } %> <% if (completedTodos.length > 0) {%>
+        <!-- Completed -->
+        <div>
+          <%- include('todoview', { todos: completedTodos, todoTitle:
+          'Completed' }) %>
+        </div>
+        <% } %>
+      </div>
     </div>
-    <% } %> <% if (dueTodayTodos.length > 0) {%>
-    <!-- Due Today -->
-    <div>
-      <%- include('todoview', { todos: dueTodayTodos, todoTitle: 'Due Today' })
-      %>
-    </div>
-    <% } %> <% if (dueLaterTodos.length > 0) {%>
-    <!-- Due Later -->
-    <div>
-      <%- include('todoview', { todos: dueLaterTodos, todoTitle: 'Due Later' })
-      %>
-    </div>
-    <% } %> <% if (completedTodos.length > 0) {%>
-    <!-- Completed -->
-    <div>
-      <%- include('todoview', { todos: completedTodos, todoTitle: 'Completed' })
-      %>
-    </div>
-    <% } %>
   </div>
 </div>
 <script>

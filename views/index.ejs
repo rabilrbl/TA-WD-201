@@ -11,14 +11,30 @@
     <link rel="stylesheet" href="/css/styles.css" />
     <title>ToDo</title>
   </head>
-  <body class="">
-    <div class="grid grid-cols-6">
-      <div class="col-start-3 col-span-2 py-10">
-        <h1 class="text-xl text-slate-600 font-semibold mb-4">To-Do Manager</h1>
-        <p class="py-2">Welcome to the To-Do Manager</p>
-        <p class="py-2">New here? <a href="/signup" class="text-green-600">Sign-up now</a></p>
-        <p class="py-2">Already have an account? <a href="/login" class="text-green-600">Sign-in</a></p>
+  <body class="h-screen font-sans">
+    <header class="shadow py-4">
+      <div class="container mx-auto px-6 flex items-center justify-between max-w-xl">
+        <h1 class="text-4xl font-extrabold text-gray-200">Todo App</h1>
       </div>
-    </div> 
+    </header>
+    <main class="container mx-auto px-6 py-8">
+      <div class="max-w-lg mx-auto">
+        <h2 class="text-xl font-semibold text-gray-100 mb-4">Stay organized with our simple todo app</h2>
+        <p class="text-gray-200 mb-4">
+          Our todo app makes it easy to manage your tasks and stay organized. With features like task categorization, due dates, and recurring tasks, you'll never miss a deadline again.
+        </p>
+        <div class="flex flex-row my-4 justify-start items-center gap-6">
+          <a href="/signup" class="bg-blue-500 py-2 px-4 text-xl font-bold rounded-full shadow-xl shadow-gray-400 text-gray-100">Sign up</a>
+         <a href="/login" class="bg-teal-500 py-2 px-4 text-xl font-bold rounded-full shadow-xl shadow-gray-400 text-gray-100">Sign in</a>
+         
+        </div>
+
+      </div>
+    </main>
+    <footer class="py-4">
+      <div class="container mx-auto px-6 text-center text-gray-100">
+        &copy; 2021 Todo Management App
+      </div>
+    </footer>
   </body>
 </html>
