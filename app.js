@@ -47,18 +47,22 @@ passport.use(
       passwordField: "password",
     },
     function (username, password, done) {
-      Users.findOne({ where: { email: username } })
-        .then(async function (user) {
-          const result = await bcrypt.compare(password, user.password);
-          if (result) {
-            return done(null, user);
-          } else {
-            return done(null, false, { message: "Invalid password" });
-          }
-        })
-        .catch((err) => {
-          return done(err);
-        });
+      try {
+        Users.findOne({ where: { email: username } })
+          .then(async function (user) {
+            const result = await bcrypt.compare(password, user.password);
+            if (result) {
+              return done(null, user);
+            } else {
+              return done(null, false, { message: "Invalid credentials" });
+            }
+          })
+          .catch(() => {
+            return done(null, false, { message: "Invalid credentials" });
+          });
+      } catch (err) {
+        return done(err);
+      }
     }
   )
 );
