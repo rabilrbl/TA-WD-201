@@ -10,6 +10,7 @@ const connectEnsureLogin = require("connect-ensure-login"); //authorization
 const session = require("express-session"); // session middleware for cookie support
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcrypt");
+const process = require("process");
 
 const saltRounds = 10;
 
@@ -29,7 +30,7 @@ app.use(csurf({ cookie: true }));
 
 app.use(
   session({
-    secret: "my-super-secret-key-7218728182782818218782718hsjahsu8as8a8su88",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: { maxAge: 24 * 60 * 60 * 1000 }, // 24 hour
