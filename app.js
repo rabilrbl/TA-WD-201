@@ -233,11 +233,9 @@ app.post(
             "error",
             "You already have an account associated with this email"
           ) && response.redirect("/signup")
-        : response
-            .status(422)
-            .json({
-              error: "You already have an account associated with this email",
-            });
+        : response.status(422).json({
+            error: "You already have an account associated with this email",
+          });
     }
     await Users.create({
       firstName,
