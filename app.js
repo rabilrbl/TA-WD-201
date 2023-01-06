@@ -91,7 +91,8 @@ passport.deserializeUser(function (id, done) {
 });
 
 app.get("/", async (request, response) => {
-  if (request.user.id) {
+  // Check if user is logged in
+  if (request.user && request.accepts("html")) {
     return response.redirect("/todos");
   }
   return request.accepts("html")
