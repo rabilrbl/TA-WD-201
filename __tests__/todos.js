@@ -7,7 +7,7 @@ const { Todo } = require("../models/");
 
 let server, agent, _csrf;
 
-const fetchCSRFToken = async () => {
+const fetchCSRFToken = async (agent, email = "test@user.in") => {
   // Get csrf token from home page
   let response = await agent.get("/signup").set("Accept", "text/html");
   const csrfToken = response.text.match(/name="_csrf" value="(.*)"/)[1];
@@ -16,7 +16,7 @@ const fetchCSRFToken = async () => {
     .send({
       firstName: "Test",
       lastName: "User",
-      email: "test@user.in",
+      email,
       password: "Test@1234535345",
       _csrf: csrfToken,
     })
@@ -34,7 +34,7 @@ describe("Todo Application", function () {
     server = app.listen(3000, () => {});
     agent = request.agent(server, { keepAlive: true });
 
-    const init = await fetchCSRFToken();
+    const init = await fetchCSRFToken(agent);
     _csrf = init.csrfToken;
     userId = init.userId;
 
@@ -166,35 +166,23 @@ describe("Todo Application", function () {
 
   // Add tests to verify userA cannot update or delete userB's todo
   it("should not update todo of another user", async () => {
-    // Create todo and store id
-    let res = await agent
-      .post("/todos")
-      .set("Accept", "application/json")
-      .send({
-        title: "Test Todo 99999",
-        dueDate: new Date(),
-        _csrf,
-      });
-    expect(res.statusCode).toEqual(200);
-    const todoId = JSON.parse(res.text).id;
+    const agent2 = request.agent(server);
+    const init2 = await fetchCSRFToken(agent2, "user2@test.in");
 
-    // Create another user
-    res = await agent.post("/users").send({
-      firstName: "Test",
-      lastName: "User",
-      email: "user222@teset.in",
-      password: "sfd4r4wr4",
-      _csrf,
+    const _csrf2 = init2._csrf;
+
+    let res2 = await agent2.put("/todos/1").send({
+      completed: true,
+      _csrf: _csrf2,
     });
 
-    // update todo of another user
-    res = await agent
-      .put(`/todos/${todoId}`)
-      .send({
-        completed: true,
-        _csrf,
-      })
-      .expect(404);
+    expect(res2.statusCode).toEqual(403);
+
+    res2 = await agent2.delete("/todos/1").send({
+      _csrf: _csrf2,
+    });
+
+    expect(res2.statusCode).toEqual(403);
   });
 
   it("test for sessions", async () => {
