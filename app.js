@@ -91,7 +91,10 @@ passport.deserializeUser(function (id, done) {
 });
 
 app.get("/", async (request, response) => {
-  request.accepts("html")
+  if (request.user.id) {
+    return response.redirect("/todos");
+  }
+  return request.accepts("html")
     ? response.render("index", { csrfToken: request.csrfToken() })
     : response.json({
         message: "Welcome to the Todo API",
@@ -113,6 +116,7 @@ app.get(
           dueTodayTodos,
           dueLaterTodos,
           completedTodos,
+          user: request.user,
           csrfToken: request.csrfToken(),
         })
       : response.json({
@@ -222,6 +226,19 @@ app.post(
     const lastName = request.body.lastName.trim();
     const email = request.body.email.trim();
     const password = await bcrypt.hash(request.body.password, saltRounds);
+    const notUniqueEmail = await Users.isEmailExist(email);
+    if (notUniqueEmail) {
+      return request.accepts("html")
+        ? request.flash(
+            "error",
+            "You already have an account associated with this email"
+          ) && response.redirect("/signup")
+        : response
+            .status(422)
+            .json({
+              error: "You already have an account associated with this email",
+            });
+    }
     await Users.create({
       firstName,
       lastName,

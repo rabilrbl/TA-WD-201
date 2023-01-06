@@ -13,6 +13,31 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "userId",
       });
     }
+
+    static async isEmailExist(email) {
+      const user = await this.findOne({
+        where: {
+          email: email,
+        },
+      });
+      if (user) {
+        return true;
+      }
+      return false;
+    }
+
+    async create(data) {
+      // Check if email already exists
+      const user = await this.findOne({
+        where: {
+          email: data.email,
+        },
+      });
+      if (user) {
+        throw new Error("Email already exists");
+      }
+      return super.create(data);
+    }
   }
   Users.init(
     {

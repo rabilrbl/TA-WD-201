@@ -9,6 +9,14 @@
     <div class="grid grid-cols-6">
       <div class="col-start-3 col-span-2 py-10">
         <h1 class="text-xl text-slate-600 font-semibold mb-4">To-Do Manager</h1>
+        <h6 class="py-4">Login to you account</h6>
+        <% if(messages && messages.error && messages.error.length > 0)  { %>
+          <ul class="bg-red-500 text-gray-100 p-2 rounded-xl m-2">
+            <% for(var i=0; i<messages.error.length; i++) { %>
+                    <li> <%= messages.error[i] %></li>
+            <% } %>
+          </ul>
+          <% } %>
         <h6 class="py-4">Signup as a new user</h6>
         <form action="/users" method="post">
           <input type="hidden" name="_csrf" value="<%= csrfToken %>" />

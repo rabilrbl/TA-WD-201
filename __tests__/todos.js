@@ -164,6 +164,39 @@ describe("Todo Application", function () {
     expect(res.statusCode).toEqual(400);
   });
 
+  // Add tests to verify userA cannot update or delete userB's todo
+  it("should not update todo of another user", async () => {
+    // Create todo and store id
+    let res = await agent
+      .post("/todos")
+      .set("Accept", "application/json")
+      .send({
+        title: "Test Todo 99999",
+        dueDate: new Date(),
+        _csrf,
+      });
+    expect(res.statusCode).toEqual(200);
+    const todoId = JSON.parse(res.text).id;
+
+    // Create another user
+    res = await agent.post("/users").send({
+      firstName: "Test",
+      lastName: "User",
+      email: "user222@teset.in",
+      password: "sfd4r4wr4",
+      _csrf,
+    });
+
+    // update todo of another user
+    res = await agent
+      .put(`/todos/${todoId}`)
+      .send({
+        completed: true,
+        _csrf,
+      })
+      .expect(404);
+  });
+
   it("test for sessions", async () => {
     let res = await agent.get("/todos");
     expect(res.statusCode).toBe(200);
